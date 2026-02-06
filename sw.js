@@ -1,4 +1,14 @@
-// This tells the browser the app can work offline
+const CACHE_NAME = 'goals-v1';
+const assets = ['./', './index.html'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(assets))
+  );
+});
+
 self.addEventListener('fetch', (event) => {
-  // Logic for offline support can go here later
+  event.respondWith(
+    caches.match(event.request).then((response) => response || fetch(event.request))
+  );
 });
