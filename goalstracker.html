@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Goal Pursuit</title>
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22GoalTracker%22,%22short_name%22:%22Goals%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22#0f172a%22,%22theme_color%22:%22#38bdf8%22}">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8;
+            --text: #f1f5f9;
+            --success: #4ade80;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top left, #1e293b, #0f172a);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            transition: width 0.5s ease;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .item {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .item:hover {
+            transform: translateX(5px);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .item.checked {
+            border-left: 4px solid var(--success);
+            opacity: 0.7;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 6px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .checked .checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checked .checkbox::after {
+            content: '✓';
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .label {
+            font-size: 1.1rem;
+            flex-grow: 1;
+        }
+
+        .checked .label {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .stats {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>MISSION 2026</h1>
+        <p class="stats">Target: End of Year</p>
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <p id="counter">0 of 13 completed</p>
+    </header>
+
+    <div class="checklist" id="list">
+        </div>
+</div>
+
+<script>
+    const goals = [
+        "Passport", "Mobile Phone", "Shoes", "Scholarship", 
+        "Target Bank Balance", "Police Clearance", "Medical Certificate", 
+        "Transcript", "Certificate", "Shirts", "Trousers", 
+        "ATAS", "Recommendation"
+    ];
+
+    const listContainer = document.getElementById('list');
+    const progressBar = document.getElementById('progress-bar');
+    const counter = document.getElementById('counter');
+
+    // Load saved data
+    const savedData = JSON.parse(localStorage.getItem('myGoals2026')) || {};
+
+    function updateUI() {
+        const total = goals.length;
+        const completed = document.querySelectorAll('.checked').length;
+        const percent = (completed / total) * 100;
+        
+        progressBar.style.width = percent + '%';
+        counter.innerText = `${completed} of ${total} completed`;
+    }
+
+    function toggleItem(index, element) {
+        element.classList.toggle('checked');
+        savedData[index] = element.classList.contains('checked');
+        localStorage.setItem('myGoals2026', JSON.stringify(savedData));
+        updateUI();
+    }
+
+    goals.forEach((goal, index) => {
+        const div = document.createElement('div');
+        div.className = 'item' + (savedData[index] ? ' checked' : '');
+        div.innerHTML = `
+            <div class="checkbox"></div>
+            <span class="label">${goal}</span>
+        `;
+        div.onclick = () => toggleItem(index, div);
+        listContainer.appendChild(div);
+    });
+
+    updateUI();
+
+    // Basic Service Worker Registration for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('data:text/javascript;base64,ZelfLmFkZEV2ZW50TGlzdGVuZXIoJ2ZldGNoJywgZXZlbnQgPT4ge30pOw==');
+        });
+    }
+</script>
+
+</body>
+</html>
