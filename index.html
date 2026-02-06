@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Goal Pursuit</title>
-    <link rel="manifest" href="/my-2026-goals/manifest.json">
-     <meta name="theme-color" content="#38bdf8">
-        :root {
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#38bdf8">
+    <style>
+    :root {
             --bg: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --accent: #38bdf8;
@@ -154,14 +155,12 @@
     const progressBar = document.getElementById('progress-bar');
     const counter = document.getElementById('counter');
 
-    // Load saved data
     const savedData = JSON.parse(localStorage.getItem('myGoals2026')) || {};
 
     function updateUI() {
         const total = goals.length;
         const completed = document.querySelectorAll('.checked').length;
         const percent = (completed / total) * 100;
-        
         progressBar.style.width = percent + '%';
         counter.innerText = `${completed} of ${total} completed`;
     }
@@ -176,24 +175,24 @@
     goals.forEach((goal, index) => {
         const div = document.createElement('div');
         div.className = 'item' + (savedData[index] ? ' checked' : '');
-        div.innerHTML = `
-            <div class="checkbox"></div>
-            <span class="label">${goal}</span>
-        `;
+        div.innerHTML = `<div class="checkbox"></div><span class="label">${goal}</span>`;
         div.onclick = () => toggleItem(index, div);
         listContainer.appendChild(div);
     });
 
     updateUI();
 
-    // Basic Service Worker Registration for PWA
+    // REGISTER THE ACTUAL SW.JS FILE
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('data:text/javascript;base64,ZelfLmFkZEV2ZW50TGlzdGVuZXIoJ2ZldGNoJywgZXZlbnQgPT4ge30pOw==');
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker Registered!', reg))
+                .catch(err => console.log('Service Worker Failed!', err));
         });
     }
 </script>
 
 </body>
 </html>
+
 
